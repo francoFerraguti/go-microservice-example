@@ -27,4 +27,17 @@ func TestConfiguration(t *testing.T) {
 	configuration.Load()
 
 	assert.Equal(t, os.Getenv("PORT"), configuration.Port())
+	assert.Equal(t, os.Getenv("DB_NAME"), configuration.databaseConfiguration.name)
+	assert.Equal(t, os.Getenv("DB_HOST"), configuration.databaseConfiguration.host)
+	assert.Equal(t, os.Getenv("DB_PORT"), configuration.databaseConfiguration.port)
+	assert.Equal(t, os.Getenv("DB_USERNAME"), configuration.databaseConfiguration.username)
+	assert.Equal(t, os.Getenv("DB_PASSWORD"), configuration.databaseConfiguration.password)
+}
+
+func TestDatabase(t *testing.T) {
+	configuration := configuration{}
+	configuration.Load()
+
+	database := database{}
+	database.Connect(&configuration)
 }
