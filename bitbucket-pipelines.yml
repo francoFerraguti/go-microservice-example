@@ -1,0 +1,9 @@
+image: golang:1.10
+
+pipelines:
+  default:
+    - step:
+        script:
+          - mkdir -p /go/src/github.com/francoFerraguti &&  cp -R `pwd` /go/src/github.com/francoFerraguti/go-microservice-example
+          - cd /go/src/github.com/francoFerraguti/go-microservice-example
+          - go run *.go
