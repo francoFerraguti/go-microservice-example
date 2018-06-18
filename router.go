@@ -3,16 +3,17 @@ package main
 import (
 	"log"
 
-	"github.com/francoFerraguti/go-microservice-example/user"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
+
+var myRouter *router
 
 type Router interface {
 	Get() *gin.Engine
 	Set(router *gin.Engine)
 	Init()
-	Run(c *configuration)
+	Run()
 	Pong()
 }
 
@@ -25,6 +26,7 @@ func (r *router) Get() *gin.Engine {
 }
 
 func (r *router) Set(router *gin.Engine) {
+	log.Println("", r)
 	r.router = router
 }
 
@@ -43,14 +45,14 @@ func (r *router) Init() {
 	{
 		v1.GET("/ping", r.Pong)
 
-		v1.POST("/user", user.Post)
+		v1.POST("/user", userPost)
 	}
 
 	r.Set(router)
 }
 
-func (r *router) Run(c *configuration) {
-	log.Fatal(r.router.Run(":" + c.Port()))
+func (r *router) Run() {
+	log.Fatal(r.router.Run(":" + myConfiguration.Port()))
 }
 
 func (r *router) Pong(c *gin.Context) {

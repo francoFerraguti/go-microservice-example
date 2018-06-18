@@ -10,34 +10,36 @@ import (
 )
 
 func TestRouter(t *testing.T) {
-	router := router{}
-	router.Init()
+	SetupProject()
+	myRouter.Init()
 
 	recorder := httptest.NewRecorder()
 	request, err := http.NewRequest("GET", "/v1/ping", nil)
 	assert.NoError(t, err)
-	router.Get().ServeHTTP(recorder, request)
+	myRouter.Get().ServeHTTP(recorder, request)
 
 	assert.Equal(t, 200, recorder.Code)
 	assert.Equal(t, "pong", recorder.Body.String())
 }
 
 func TestConfiguration(t *testing.T) {
-	configuration := configuration{}
-	configuration.Load()
+	SetupProject()
+	myConfiguration.Load()
 
-	assert.Equal(t, os.Getenv("PORT"), configuration.Port())
-	assert.Equal(t, os.Getenv("DB_NAME"), configuration.databaseConfiguration.name)
-	assert.Equal(t, os.Getenv("DB_HOST"), configuration.databaseConfiguration.host)
-	assert.Equal(t, os.Getenv("DB_PORT"), configuration.databaseConfiguration.port)
-	assert.Equal(t, os.Getenv("DB_USERNAME"), configuration.databaseConfiguration.username)
-	assert.Equal(t, os.Getenv("DB_PASSWORD"), configuration.databaseConfiguration.password)
+	assert.Equal(t, os.Getenv("PORT"), myConfiguration.Port())
+	assert.Equal(t, os.Getenv("PROJECT_NAME"), myConfiguration.ProjectName())
+	assert.Equal(t, os.Getenv("DB_NAME"), myConfiguration.Database().Name())
+	assert.Equal(t, os.Getenv("DB_HOST"), myConfiguration.Database().Host())
+	assert.Equal(t, os.Getenv("DB_PORT"), myConfiguration.Database().Port())
+	assert.Equal(t, os.Getenv("DB_USERNAME"), myConfiguration.Database().Username())
+	assert.Equal(t, os.Getenv("DB_PASSWORD"), myConfiguration.Database().Password())
 }
 
 func TestDatabase(t *testing.T) {
-	configuration := configuration{}
-	configuration.Load()
+	SetupProject()
+	myConfiguration.Load()
 
-	database := database{}
-	database.Connect(&configuration)
+	myDatabase.Connect()
+	myDatabase.Setup()
+	assert.Equal(t, 1, myDatabase.NumberOfTables())
 }

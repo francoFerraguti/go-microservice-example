@@ -1,13 +1,21 @@
 package main
 
 func main() {
-	configuration := configuration{}
-	configuration.Load()
+	SetupProject()
 
-	database := database{}
-	database.Connect(&configuration)
+	myRouter.Run()
+}
 
-	router := router{}
-	router.Init()
-	router.Run(&configuration)
+func SetupProject() {
+	myConfiguration = &configuration{
+		databaseConfiguration: &databaseConfiguration{},
+	}
+	myDatabase = &database{}
+	myRouter = &router{}
+	myHelper = &helper{}
+
+	myConfiguration.Load()
+	myDatabase.Connect()
+	myDatabase.Setup()
+	myRouter.Init()
 }
